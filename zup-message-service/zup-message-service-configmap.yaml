@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: zup-message-service-configmap
+data:
+    SERVER_PORT: "8081"
+    API_PATH_PREFIX: /api/message/v1
+    USER_SERVICE_API_PATH_PREFIX: /api/user/v1
+    # USER_SERVICE_URL: http://localhost # see deployment file
