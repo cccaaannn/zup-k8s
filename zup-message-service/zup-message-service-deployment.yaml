@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: zup-message-service-deployment
+    labels:
+        app: zup-message-service
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: zup-message-service
+    template:
+        metadata:
+            labels:
+                app: zup-message-service
+        spec:
+            containers:
+                - name: zup-message-service
+                  image: cccaaannn/zup-message-service
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 8081
+                  env:
+                      - name: SERVER_PORT
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-message-service-configmap
+                                key: SERVER_PORT
+                      - name: API_PATH_PREFIX
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-message-service-configmap
+                                key: API_PATH_PREFIX
+                      - name: USER_SERVICE_API_PATH_PREFIX
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-message-service-configmap
+                                key: USER_SERVICE_API_PATH_PREFIX
+                      - name: USER_SERVICE_URL
+                        value: http://zup-user-service-service.default.svc.cluster.local:8080
+
+
+                      - name: POSTGRESQL_CONNECTION_STRING
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-message-service-secret
+                                key: POSTGRESQL_CONNECTION_STRING
+                      - name: RABBITMQ_CONNECTION_STRING
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-message-service-secret
+                                key: RABBITMQ_CONNECTION_STRING
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: zup-message-service-service
+spec:
+    selector:
+        app: zup-message-service
+    ports:
+        - protocol: TCP
+          port: 8081
+          targetPort: 8081
