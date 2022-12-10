@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: zup-user-service-configmap
+data:
+    spring_profiles_active: prod
+    frontend_base_url: http://zupmessage.com

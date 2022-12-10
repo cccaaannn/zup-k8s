@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: zup-user-service-deployment
+    labels:
+        app: zup-user-service
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: zup-user-service
+    template:
+        metadata:
+            labels:
+                app: zup-user-service
+        spec:
+            containers:
+                - name: zup-user-service
+                  image: cccaaannn/zup-user-service
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 8080
+                  env:
+                      - name: spring_profiles_active
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-user-service-configmap
+                                key: spring_profiles_active
+
+                      - name: spring_datasource_url
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-user-service-secret
+                                key: spring_datasource_url
+                      - name: spring_datasource_username
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-user-service-secret
+                                key: spring_datasource_username
+                      - name: spring_datasource_password
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-user-service-secret
+                                key: spring_datasource_password
+
+                      - name: security_jwt_secret_key
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-user-service-secret
+                                key: security_jwt_secret_key
+
+                      - name: email_gmail_username
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-user-service-secret
+                                key: email_gmail_username
+                      - name: email_gmail_password
+                        valueFrom:
+                            secretKeyRef:
+                                name: zup-user-service-secret
+                                key: email_gmail_password
+
+                      - name: frontend_base_url
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-user-service-configmap
+                                key: frontend_base_url
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: zup-user-service-service
+spec: 
+    selector:
+        app: zup-user-service
+    ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
