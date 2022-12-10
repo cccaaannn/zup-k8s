@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zup-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: zupmessage.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: zup-frontend-service
+              port:
+                number: 80
+        - path: /api/user/v1
+          pathType: Prefix
+          backend:
+            service:
+              name: zup-user-service-service
+              port:
+                number: 8080
+        - path: /api/message/v1
+          pathType: Prefix
+          backend:
+            service:
+              name: zup-message-service-service
+              port:
+                number: 8081
