@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: zup-frontend-configmap
+data:
+    USER_SERVICE_API_URL: http://zupmessage.com/api/user/v1
+    MESSAGE_SERVICE_API_URL: http://zupmessage.com/api/message/v1
+    MESSAGE_SERVICE_WEBSOCKET_URL: ws://zupmessage.com/api/message/v1

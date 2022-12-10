@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: zup-frontend-deployment
+    labels:
+        app: zup-frontend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: zup-frontend
+    template:
+        metadata:
+            labels:
+                app: zup-frontend
+        spec:
+            containers:
+                - name: zup-frontend
+                  image: cccaaannn/zup-frontend
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 80
+                  env:
+                      - name: USER_SERVICE_API_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-frontend-configmap
+                                key: USER_SERVICE_API_URL
+                      - name: MESSAGE_SERVICE_API_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-frontend-configmap
+                                key: MESSAGE_SERVICE_API_URL
+                      - name: MESSAGE_SERVICE_WEBSOCKET_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: zup-frontend-configmap
+                                key: MESSAGE_SERVICE_WEBSOCKET_URL
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: zup-frontend-service
+spec:
+    selector:
+        app: zup-frontend
+    ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80
